@@ -1,10 +1,12 @@
 
 const jwt = require('jsonwebtoken');
 
-// Verify the user's login token
-const authenticateUser = (req, res, next) => {
+const { getUserTokenVersion } = require('../models/userModel');
+
+const validRoles = ['ADMIN', 'USER', 'STORE_OWNER'];
+
+const authenticateUser = async (req, res, next) => {
     try {
-        // Get the token from the Authorization header
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -14,28 +16,57 @@ const authenticateUser = (req, res, next) => {
             });
         }
 
-        const token = authHeader.split(' ')[1];
+        const token = authHeader.slice(7).trim();
 
-        // Verify the token
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Access denied. Please log in.',
+            });
+        }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Attach verified user information to the request
+        if (
+            !decoded ||
+            !Number.isInteger(decoded.userId) ||
+            decoded.userId <= 0 ||
+            !validRoles.includes(decoded.role) ||
+            !Number.isInteger(decoded.tokenVersion)
+        ) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid login token.',
+            });
+        }
+
+        const user = await getUserTokenVersion(decoded.userId);
+
+        if (!user || user.token_version !== decoded.tokenVersion) {
+            return res.status(401).json({
+                success: false,
+                message: 'Your session has expired. Please log in again.',
+            });
+        }
+
         req.user = {
             userId: decoded.userId,
             role: decoded.role,
         };
 
         next();
-
     } catch (error) {
-        return res.status(401).json({
-            success: false,
-            message: 'Invalid or expired login token.',
-        });
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid or expired login token.',
+            });
+        }
+
+        return next(error);
     }
 };
 
-// Check whether the user has the required role
 const authorizeRoles = (...allowedRoles) => {
     return (req, res, next) => {
         if (!req.user || !allowedRoles.includes(req.user.role)) {

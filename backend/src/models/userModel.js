@@ -1,7 +1,6 @@
 
 const pool = require('../config/db');
 
-// Find a user by email, including their role
 const findUserByEmail = async (email) => {
     const result = await pool.query(
         `SELECT
@@ -11,6 +10,7 @@ const findUserByEmail = async (email) => {
             users.password,
             users.address,
             users.role_id,
+            users.token_version,
             roles.name AS role
          FROM users
          INNER JOIN roles ON users.role_id = roles.id
@@ -21,7 +21,6 @@ const findUserByEmail = async (email) => {
     return result.rows[0];
 };
 
-// Create a new user
 const createUser = async (userData) => {
     const { name, email, password, address, roleId } = userData;
 
@@ -35,24 +34,22 @@ const createUser = async (userData) => {
     return result.rows[0];
 };
 
-
-// Update a user's password
 const updateUserPassword = async (userId, hashedPassword) => {
     const result = await pool.query(
         `UPDATE users
-         SET password = $1
+         SET password = $1,
+             token_version = token_version + 1
          WHERE id = $2
-         RETURNING id`,
+         RETURNING id, token_version`,
         [hashedPassword, userId]
     );
 
     return result.rows[0];
 };
 
-// Find a user by ID
 const findUserById = async (userId) => {
     const result = await pool.query(
-        `SELECT id, password
+        `SELECT id, password, token_version
          FROM users
          WHERE id = $1`,
         [userId]
@@ -61,10 +58,21 @@ const findUserById = async (userId) => {
     return result.rows[0];
 };
 
+const getUserTokenVersion = async (userId) => {
+    const result = await pool.query(
+        `SELECT token_version
+         FROM users
+         WHERE id = $1`,
+        [userId]
+    );
+
+    return result.rows[0];
+};
 
 module.exports = {
     findUserByEmail,
     findUserById,
     createUser,
     updateUserPassword,
+    getUserTokenVersion,
 };

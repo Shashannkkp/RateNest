@@ -1,19 +1,25 @@
 
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const {
     findUserByEmail,
+    findUserById,
     createUser,
+    updateUserPassword,
 } = require('../models/userModel');
 
-const { validateRegistration } = require('../validators/authValidator');
+const {
+    validateRegistration,
+    validateNewPassword,
+} = require('../validators/authValidator');
 
-// Register a new normal user
+const pool = require('../config/db');
+
 const registerUser = async (req, res) => {
     try {
         const { name, email, address, password } = req.body;
 
-        // Step 1: Validate the submitted information
         const errors = validateRegistration({
             name,
             email,
@@ -29,10 +35,8 @@ const registerUser = async (req, res) => {
             });
         }
 
-        // Step 2: Normalize the email
         const normalizedEmail = email.trim().toLowerCase();
 
-        // Step 3: Check whether the email is already registered
         const existingUser = await findUserByEmail(normalizedEmail);
 
         if (existingUser) {
@@ -42,11 +46,9 @@ const registerUser = async (req, res) => {
             });
         }
 
-        // Step 4: Hash the password before saving it
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // Step 5: Find the normal USER role
-        const roleResult = await require('../config/db').query(
+        const roleResult = await pool.query(
             'SELECT id FROM roles WHERE name = $1',
             ['USER']
         );
@@ -58,7 +60,6 @@ const registerUser = async (req, res) => {
             });
         }
 
-        // Step 6: Save the new user
         const newUser = await createUser({
             name: name.trim(),
             email: normalizedEmail,
@@ -67,13 +68,11 @@ const registerUser = async (req, res) => {
             roleId: roleResult.rows[0].id,
         });
 
-        // Step 7: Send a safe response without the password
         return res.status(201).json({
             success: true,
             message: 'Account created successfully.',
             user: newUser,
         });
-
     } catch (error) {
         console.error('Registration error:', error.message);
 
@@ -84,12 +83,10 @@ const registerUser = async (req, res) => {
     }
 };
 
-// Log in an existing user
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Step 1: Check required fields
         if (
             !email ||
             typeof email !== 'string' ||
@@ -102,8 +99,9 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Step 2: Find the user
-        const user = await findUserByEmail(email.trim().toLowerCase());
+        const user = await findUserByEmail(
+            email.trim().toLowerCase()
+        );
 
         if (!user) {
             return res.status(401).json({
@@ -112,7 +110,6 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Step 3: Compare the entered password with the stored hash
         const isPasswordValid = await bcrypt.compare(
             password,
             user.password
@@ -125,19 +122,16 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Step 4: Create a JWT token
-        const jwt = require('jsonwebtoken');
-
         const token = jwt.sign(
-            {
-                userId: user.id,
-                role: user.role,
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
-        );
+    {
+        userId: user.id,
+        role: user.role,
+        tokenVersion: user.token_version,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '1d' }
+);
 
-        // Step 5: Return user details and token
         return res.status(200).json({
             success: true,
             message: 'Login successful.',
@@ -150,7 +144,6 @@ const loginUser = async (req, res) => {
                 role: user.role,
             },
         });
-
     } catch (error) {
         console.error('Login error:', error.message);
 
@@ -161,7 +154,85 @@ const loginUser = async (req, res) => {
     }
 };
 
+const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (
+            typeof currentPassword !== 'string' ||
+            typeof newPassword !== 'string' ||
+            !currentPassword ||
+            !newPassword
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: 'Current password and new password are required.',
+            });
+        }
+
+        if (!validateNewPassword(newPassword)) {
+            return res.status(400).json({
+                success: false,
+                message: 'New password must be 8-16 characters and contain at least one uppercase letter and one special character.',
+            });
+        }
+
+        const user = await findUserById(req.user.userId);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User account not found.',
+            });
+        }
+
+        const isCurrentPasswordValid = await bcrypt.compare(
+            currentPassword,
+            user.password
+        );
+
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({
+                success: false,
+                message: 'Current password is incorrect.',
+            });
+        }
+
+        const isSamePassword = await bcrypt.compare(
+            newPassword,
+            user.password
+        );
+
+        if (isSamePassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'New password must be different from your current password.',
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+        await updateUserPassword(
+            req.user.userId,
+            hashedPassword
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: 'Password changed successfully.',
+        });
+    } catch (error) {
+        console.error('Change password error:', error.message);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Unable to change password.',
+        });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    changePassword,
 };
