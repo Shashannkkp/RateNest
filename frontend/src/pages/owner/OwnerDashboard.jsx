@@ -16,7 +16,6 @@ function OwnerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch store dashboard data
   const fetchDashboard = async () => {
     try {
       setLoading(true);
@@ -31,7 +30,6 @@ function OwnerDashboard() {
     }
   };
 
-  // Load dashboard when the page opens
   useEffect(() => {
     let isMounted = true;
 
@@ -57,7 +55,6 @@ function OwnerDashboard() {
     };
   }, []);
 
-  // Rating distribution
   const ratingDistribution = store
     ? [
         { stars: 5, count: Number(store.five_star_ratings || 0) },
@@ -68,7 +65,6 @@ function OwnerDashboard() {
       ]
     : [];
 
-  // Dashboard statistics
   const stats = store
     ? [
         {

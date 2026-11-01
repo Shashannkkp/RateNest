@@ -38,7 +38,6 @@ function UserDashboard() {
   }
 });
 
-  // Load stores from the backend.
   useEffect(() => {
     let isActive = true;
 
@@ -80,7 +79,6 @@ function UserDashboard() {
     };
   }, [search]);
 
-  // Update the displayed stores whenever the user sorts them.
   const filteredStores = useMemo(() => {
     const result = [...stores];
 
@@ -113,7 +111,6 @@ function UserDashboard() {
     (store) => store.my_rating !== null && store.my_rating !== undefined
   ).length;
 
-  // Submit a new rating or update an existing rating.
   const handleRatingSubmit = async (storeId) => {
     const rating = selectedRating[storeId];
 
@@ -131,8 +128,6 @@ function UserDashboard() {
         rating: Number(rating),
       });
 
-      // Reload store information so the average and personal rating
-      // reflect the latest database values.
       const params = new URLSearchParams();
 
       if (search.trim()) {

@@ -1,7 +1,6 @@
 
 const { getDashboardStats } = require('../models/dashboardModel');
 
-// Get Admin dashboard statistics
 const getDashboard = async (req, res) => {
     try {
         const stats = await getDashboardStats();

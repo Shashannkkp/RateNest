@@ -328,10 +328,12 @@ function AdminDashboard() {
             <label className="hidden h-10 w-52 items-center gap-2 rounded-lg border border-slate-200 px-3 text-slate-400 md:flex">
               <Search size={17} />
               <input
-                type="search"
-                placeholder="Search anything..."
-                className="w-full min-w-0 bg-transparent text-xs text-slate-700 outline-none placeholder:text-slate-400"
-              />
+  type="search"
+  placeholder="Search ratings..."
+  value={search}
+  onChange={(event) => setSearch(event.target.value)}
+  className="w-full min-w-0 bg-transparent text-xs text-slate-700 outline-none placeholder:text-slate-400"
+/>
             </label>
 
             <button

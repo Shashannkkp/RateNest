@@ -91,7 +91,6 @@ function AdminStores() {
     };
   }, [search, sortAscending, currentPage]);
 
-  // Load existing Store Owner accounts for assignment.
   useEffect(() => {
     let isActive = true;
 
@@ -186,7 +185,6 @@ function AdminStores() {
     try {
       setSubmitting(true);
 
-      // Create the store.
       const response = await api.post('/admin/stores', {
         name,
         email,
@@ -195,7 +193,6 @@ function AdminStores() {
 
       const createdStore = response.store || response.data?.store;
 
-      // Assign an existing Store Owner if one was selected.
       if (form.ownerId) {
         if (!createdStore?.id) {
           throw new Error(

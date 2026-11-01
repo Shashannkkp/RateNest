@@ -22,7 +22,6 @@ function UserStores() {
   const [error, setError] = useState('');
   const [submittingStore, setSubmittingStore] = useState(null);
 
-  // Fetch stores from the backend.
   useEffect(() => {
     let isActive = true;
 
@@ -64,7 +63,6 @@ function UserStores() {
     };
   }, [search]);
 
-  // Sort the stores without changing the original state.
   const filteredStores = useMemo(() => {
     const result = [...stores];
 
@@ -87,7 +85,6 @@ function UserStores() {
     return result;
   }, [stores, sortBy]);
 
-  // Save or update a store rating in the database.
   const submitRating = async (storeId) => {
     const rating = ratings[storeId];
 
@@ -105,7 +102,6 @@ function UserStores() {
         rating: Number(rating),
       });
 
-      // Refresh store ratings after saving.
       const params = new URLSearchParams();
 
       if (search.trim()) {

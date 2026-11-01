@@ -8,7 +8,6 @@ const {
 
 const router = express.Router();
 
-// Any logged-in user can access this route
 router.get('/profile', authenticateUser, (req, res) => {
     res.status(200).json({
         success: true,
@@ -17,7 +16,6 @@ router.get('/profile', authenticateUser, (req, res) => {
     });
 });
 
-// Only Admin users can access this route
 router.get(
     '/admin',
     authenticateUser,

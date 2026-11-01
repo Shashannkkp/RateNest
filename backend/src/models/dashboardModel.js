@@ -1,7 +1,6 @@
 
 const pool = require('../config/db');
 
-// Get Admin dashboard statistics from PostgreSQL
 const getDashboardStats = async () => {
     const [statsResult, distributionResult] = await Promise.all([
         pool.query(

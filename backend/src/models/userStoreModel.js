@@ -1,7 +1,6 @@
 
 const pool = require('../config/db');
 
-// Get stores with average ratings and the logged-in user's rating
 const getStoresForUser = async (userId, search = '') => {
     const result = await pool.query(
         `SELECT
@@ -29,7 +28,6 @@ const getStoresForUser = async (userId, search = '') => {
     return result.rows;
 };
 
-// Get one store's details and the logged-in user's rating
 const getStoreForUser = async (storeId, userId) => {
     const result = await pool.query(
         `SELECT

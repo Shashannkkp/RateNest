@@ -1,7 +1,6 @@
 
 const pool = require('../config/db');
 
-// Create a new store
 const createStore = async (storeData) => {
     const { name, email, address } = storeData;
 
@@ -15,7 +14,6 @@ const createStore = async (storeData) => {
     return result.rows[0];
 };
 
-// Get stores with search, sorting, and pagination
 const getAllStores = async ({
     search,
     sortBy,
@@ -70,7 +68,6 @@ const getAllStores = async ({
     return result.rows;
 };
 
-// Count stores matching the search
 const countStores = async (search = '') => {
     const result = await pool.query(
         `SELECT COUNT(*)::INTEGER AS total
@@ -86,7 +83,6 @@ const countStores = async (search = '') => {
     return result.rows[0].total;
 };
 
-// Get one store by ID
 const getStoreById = async (storeId) => {
     const result = await pool.query(
         `SELECT
