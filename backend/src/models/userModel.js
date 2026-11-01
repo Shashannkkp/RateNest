@@ -49,9 +49,22 @@ const updateUserPassword = async (userId, hashedPassword) => {
     return result.rows[0];
 };
 
+// Find a user by ID
+const findUserById = async (userId) => {
+    const result = await pool.query(
+        `SELECT id, password
+         FROM users
+         WHERE id = $1`,
+        [userId]
+    );
+
+    return result.rows[0];
+};
+
 
 module.exports = {
     findUserByEmail,
+    findUserById,
     createUser,
     updateUserPassword,
 };
