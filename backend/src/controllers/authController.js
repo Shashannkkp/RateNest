@@ -84,6 +84,84 @@ const registerUser = async (req, res) => {
     }
 };
 
+// Log in an existing user
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Step 1: Check required fields
+        if (
+            !email ||
+            typeof email !== 'string' ||
+            !password ||
+            typeof password !== 'string'
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email and password are required.',
+            });
+        }
+
+        // Step 2: Find the user
+        const user = await findUserByEmail(email.trim().toLowerCase());
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid email or password.',
+            });
+        }
+
+        // Step 3: Compare the entered password with the stored hash
+        const isPasswordValid = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid email or password.',
+            });
+        }
+
+        // Step 4: Create a JWT token
+        const jwt = require('jsonwebtoken');
+
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                role: user.role,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '1d' }
+        );
+
+        // Step 5: Return user details and token
+        return res.status(200).json({
+            success: true,
+            message: 'Login successful.',
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                address: user.address,
+                role: user.role,
+            },
+        });
+
+    } catch (error) {
+        console.error('Login error:', error.message);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Unable to log in.',
+        });
+    }
+};
+
 module.exports = {
     registerUser,
+    loginUser,
 };
