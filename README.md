@@ -1,56 +1,150 @@
-# RateNest – Store Rating Management System
+# ⭐ RateNest – Store Rating Management System
 
-RateNest is a full-stack web application that allows users to rate stores and helps administrators and store owners manage store ratings through role-based dashboards.
+RateNest is a full-stack web application designed to simplify store rating management through a secure, role-based platform. It allows customers to discover stores, submit ratings, and manage their reviews, while administrators and store owners can monitor store performance through dedicated dashboards.
 
-## Features
+The application provides three distinct user roles: **System Administrator, Normal User, and Store Owner**, each with specific permissions and functionality.
 
-### System Administrator
+---
+
+## 📸 Screenshots
+
+Screenshots of the RateNest application are maintained in the `images/` directory.
+
+### 1. Login Page
+
+![RateNest Login Page](screenshots/login.png)
+
+*Secure login interface for accessing role-specific dashboards.*
+
+### 2. Admin Dashboard
+
+![RateNest Admin Dashboard](screenshots/AdminUI.png)
+
+*Administrator dashboard displaying platform statistics and management options.*
+
+### 3. Store Management
+
+![RateNest Store Management](screenshots/StoreUI.png)
+
+*Manage registered stores and assign Store Owners.*
+
+### 4. User Dashboard
+
+![RateNest User Dashboard](screenshots/userUI.png)
+
+*Browse stores, view ratings, and submit or update reviews.*
+
+### 5. Store Owner Dashboard
+
+![RateNest Store Owner Dashboard](screenshots/storemng.png)
+
+*Monitor store performance, average ratings, and customer feedback.*
+
+---
+
+## 📑 Table of Contents
+
+- [Project Overview](#-ratenest--store-rating-management-system)
+- [Screenshots](#-screenshots)
+- [Features](#-features)
+  - [System Administrator](#-system-administrator)
+  - [Normal User](#-normal-user)
+  - [Store Owner](#-store-owner)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Installation and Setup](#-installation-and-setup)
+- [Application Validation Rules](#-application-validation-rules)
+- [Security](#-security)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
+
+---
+
+## 🚀 Features
+
+RateNest provides role-specific functionality to ensure efficient store rating management.
+
+### 👨‍💼 System Administrator
+
+- Secure administrator login.
 - View dashboard statistics, including total users, stores, and ratings.
-- Create and manage users and stores.
-- Create Store Owner accounts and assign them to stores.
-- View and filter users, stores, and ratings.
-- View detailed user and store information.
+- Create and manage user accounts.
+- Add and manage stores.
+- Create Store Owner accounts and assign them to existing stores.
+- View and filter registered users, stores, and ratings.
+- Access detailed user and store information.
+- Manage the overall platform through an administrator dashboard.
 
-### Normal User
+### 👤 Normal User
+
 - Register and log in securely.
-- Browse and search available stores.
+- Browse all available stores.
+- Search and explore stores.
 - View store details and average ratings.
-- Submit ratings from 1 to 5.
+- Submit ratings between 1 and 5 stars.
 - Update previously submitted ratings.
+- Maintain one rating per store.
 - Change account password.
 
-### Store Owner
-- Log in to the assigned store owner account.
-- View the assigned store's average rating.
-- View total ratings and rating distribution.
-- View users who have rated their store.
+### 🏪 Store Owner
+
+- Secure login to the assigned Store Owner account.
+- Access the dashboard for the assigned store.
+- View the store's average rating.
+- Monitor the total number of ratings received.
+- View rating distribution.
+- See users who have rated their store.
 - Change account password.
 
-## Technology Stack
+---
+
+## 🛠️ Technology Stack
 
 ### Frontend
-- React.js
-- Tailwind CSS
-- React Router
-- Lucide React
+
+| Technology | Purpose |
+|---|---|
+| React.js | Building interactive user interfaces |
+| Tailwind CSS | Responsive and modern styling |
+| React Router | Client-side navigation |
+| Lucide React | Icons and visual elements |
 
 ### Backend
-- Node.js
-- Express.js
-- REST APIs
-- JSON Web Tokens (JWT)
-- bcrypt
+
+| Technology | Purpose |
+|---|---|
+| Node.js | JavaScript runtime environment |
+| Express.js | Backend framework and API development |
+| REST APIs | Communication between frontend and backend |
+| JSON Web Tokens (JWT) | Authentication and session management |
+| bcrypt | Secure password hashing |
 
 ### Database
-- PostgreSQL
 
-## Project Structure
+| Technology | Purpose |
+|---|---|
+| PostgreSQL | Relational database management |
+| SQL | Database queries and data management |
+
+### Development Tools
+
+- Git and GitHub – Version control and source code management.
+- npm – Dependency management.
+- VS Code – Development environment.
+- Postman – API testing.
+
+---
+
+## 📂 Project Structure
 
 ```text
 RateNest/
+│
 ├── backend/
 │   ├── database/
 │   │   └── schema.sql
+│   │
 │   ├── src/
 │   │   ├── config/
 │   │   ├── controllers/
@@ -59,6 +153,7 @@ RateNest/
 │   │   ├── routes/
 │   │   ├── validators/
 │   │   └── server.js
+│   │
 │   └── package.json
 │
 ├── frontend/
@@ -68,20 +163,33 @@ RateNest/
 │   │   ├── services/
 │   │   ├── App.jsx
 │   │   └── index.css
+│   │
 │   └── package.json
+│
+├── images/
+│   ├── login.png
+│   ├── admin-dashboard.png
+│   ├── store-management.png
+│   ├── user-dashboard.png
+│   └── store-owner-dashboard.png
 │
 └── README.md
 ```
 
-## Installation and Setup
+---
+
+## ⚙️ Installation and Setup
+
+Follow these steps to download, configure, and run RateNest locally.
 
 ### Prerequisites
 
-Install the following before running the project:
+Make sure the following tools are installed:
 
-- Node.js and npm
-- PostgreSQL
-- Git
+- [Node.js](https://nodejs.org/) and npm
+- [PostgreSQL](https://www.postgresql.org/)
+- [Git](https://git-scm.com/)
+- [Visual Studio Code](https://code.visualstudio.com/) (recommended)
 
 ### 1. Clone the Repository
 
@@ -90,96 +198,196 @@ git clone <your-repository-url>
 cd RateNest
 ```
 
-### 2. Set Up the Database
+### 2. Set Up PostgreSQL Database
 
-Create the database and load the schema (run from the project root):
+Create a PostgreSQL database named `ratenest_db`:
 
 ```bash
 psql -U postgres -c "CREATE DATABASE ratenest_db;"
+```
+
+Import the database schema:
+
+```bash
 psql -U postgres -d ratenest_db -f backend/database/schema.sql
 ```
 
-The schema creates all tables, the three roles, and the `token_version` column used for session validation.
+This creates the required database tables, user roles, and the `token_version` column used for session validation.
 
 ### 3. Configure Backend Environment Variables
 
+Navigate to the backend directory:
+
 ```bash
 cd backend
-copy .env.example .env      # macOS/Linux: cp .env.example .env
 ```
 
-Open `backend/.env` and set:
+Create your environment file.
 
-- `DB_PASSWORD` – your PostgreSQL password
-- `JWT_SECRET` – a long random string
-- `ADMIN_NAME` – 20 to 60 characters
-- `ADMIN_EMAIL` and `ADMIN_PASSWORD` – the first administrator's login (password: 8–16 characters, one uppercase letter, one special character)
-- `ADMIN_ADDRESS` – any address up to 400 characters
+**Windows:**
 
-Never commit the real `.env` file.
+```powershell
+copy .env.example .env
+```
 
-Create the first administrator account:
+**macOS/Linux:**
+
+```bash
+cp .env.example .env
+```
+
+Open `backend/.env` and configure the required environment variables according to your backend configuration.
+
+| Variable | Description |
+|---|---|
+| `DB_PASSWORD` | PostgreSQL database password |
+| `JWT_SECRET` | Secret key used for JWT authentication |
+| `ADMIN_NAME` | Initial administrator's name |
+| `ADMIN_EMAIL` | Initial administrator's email |
+| `ADMIN_PASSWORD` | Initial administrator's password |
+| `ADMIN_ADDRESS` | Initial administrator's address |
+
+Also configure the database connection details, server port, and frontend URL as required by the backend.
+
+**Important:** Never upload your actual `.env` file or expose database credentials and secret keys on GitHub.
+
+### 4. Install Backend Dependencies
+
+From the `backend` directory:
 
 ```bash
 npm install
+```
+
+### 5. Create the First Administrator Account
+
+Run:
+
+```bash
 npm run create-admin
 ```
 
-Log in with `ADMIN_EMAIL` and `ADMIN_PASSWORD`. From the admin dashboard you can create stores first, then Store Owner accounts and assign them to those stores.
+Use the configured administrator email and password to log in.
 
-Create a `.env` file inside the `backend` folder.
+The administrator can create stores first, then create Store Owner accounts and assign them to the respective stores.
 
-Configure your PostgreSQL connection, server port, frontend URL, and JWT secret using the environment variable names required by the backend.
-
-Keep database credentials and secret keys private. Never commit the `.env` file.
-
-### 4. Start the Backend
+### 6. Start the Backend Server
 
 ```bash
-cd backend
-npm install
 npm run dev
 ```
 
-The backend runs at:
+The backend server will run at:
 
 ```text
 http://localhost:5000
 ```
 
-### 5. Start the Frontend
+### 7. Install Frontend Dependencies
 
-Open another terminal:
+Open a new terminal and navigate to the frontend directory:
 
 ```bash
 cd frontend
+```
+
+Install the required packages:
+
+```bash
 npm install
+```
+
+### 8. Start the Frontend Application
+
+```bash
 npm run dev
 ```
 
-Open the frontend URL shown in the terminal, normally:
+The frontend application will normally be available at:
 
 ```text
 http://localhost:5173
 ```
 
-## Application Validation Rules
+Open the URL in your browser to access RateNest.
 
-- Name must contain between 20 and 60 characters.
-- Address must not exceed 400 characters.
-- Email must have a valid format.
-- Password must contain 8–16 characters, at least one uppercase letter, and at least one special character.
-- Store ratings must be between 1 and 5.
-- Each user can submit one rating per store and update it later.
+---
 
-## Security
+## 📋 Application Validation Rules
 
-- Passwords are hashed using bcrypt.
-- JWT-based authentication protects private routes.
-- Role-based authorization restricts access to the appropriate dashboards and operations.
-- Database queries use parameterized SQL to help prevent SQL injection.
-- Password changes invalidate previously issued tokens.
+RateNest implements validation rules to maintain consistent and reliable data.
 
-## License
+| Field | Validation |
+|---|---|
+| Name | Minimum 20 and maximum 60 characters |
+| Address | Maximum 400 characters |
+| Email | Must follow a valid email format |
+| Password | 8–16 characters, at least one uppercase letter and one special character |
+| Store Rating | Must be between 1 and 5 |
+| User Rating | One rating per user per store; existing ratings can be updated |
+
+---
+
+## 🔐 Security
+
+Security is an important part of the RateNest application.
+
+- **Password Hashing:** Passwords are securely hashed using bcrypt before being stored.
+- **JWT Authentication:** JSON Web Tokens are used to authenticate users and protect private routes.
+- **Role-Based Authorization:** Access to dashboards and operations is restricted according to user roles.
+- **SQL Injection Protection:** Parameterized SQL queries help prevent SQL injection attacks.
+- **Session Invalidation:** Password changes invalidate previously issued tokens using token version validation.
+- **Environment Variables:** Sensitive configuration values and database credentials are maintained outside the source code.
+
+---
+
+## 🤝 Contributing
+
+Contributions, suggestions, and improvements are welcome.
+
+To contribute:
+
+1. Fork the repository.
+2. Create a new feature branch:
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. Make your changes.
+4. Test your changes to ensure everything works correctly.
+5. Commit your changes:
+
+   ```bash
+   git commit -m "Add: your feature description"
+   ```
+
+6. Push your branch:
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+7. Open a Pull Request describing your changes.
+
+Please ensure that your contributions follow the existing project structure and coding standards.
+
+---
+
+## 📄 License
 
 This project was developed for educational and software development purposes.
+
+No separate open-source license has been specified yet. If you intend to distribute RateNest under the MIT License, add a `LICENSE` file containing the official MIT License text and your copyright details.
+
+---
+
+## 👨‍💻 Author
+
+**Shashank Patel**
+
+Developed as a full-stack web development project using React.js, Node.js, Express.js, and PostgreSQL.
+
+---
+
+⭐ If you find this project useful, consider giving the repository a star on GitHub!
