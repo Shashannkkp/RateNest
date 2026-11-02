@@ -24,7 +24,7 @@ Screenshots of the RateNest application are maintained in the `images/` director
 
 ### 3. Store Management
 
-![RateNest Store Management](screenshots/StoreUI.png)
+![RateNest Store Management](screenshots/storemng.png)
 
 *Manage registered stores and assign Store Owners.*
 
@@ -36,7 +36,7 @@ Screenshots of the RateNest application are maintained in the `images/` director
 
 ### 5. Store Owner Dashboard
 
-![RateNest Store Owner Dashboard](screenshots/storemng.png)
+![RateNest Store Owner Dashboard](screenshots/StoreUI.png)
 
 *Monitor store performance, average ratings, and customer feedback.*
 
