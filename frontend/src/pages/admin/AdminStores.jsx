@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import {
   Plus,
@@ -19,6 +18,7 @@ function AdminStores() {
 
   const [search, setSearch] = useState('');
   const [sortAscending, setSortAscending] = useState(true);
+  const [sortBy, setSortBy] = useState('name');
   const [currentPage, setCurrentPage] = useState(1);
 
   const [showForm, setShowForm] = useState(false);
@@ -53,7 +53,7 @@ function AdminStores() {
 
         const params = new URLSearchParams({
           search,
-          sortBy: 'name',
+          sortBy,
           order: sortAscending ? 'asc' : 'desc',
           page: String(currentPage),
           limit: '10',
@@ -89,7 +89,7 @@ function AdminStores() {
     return () => {
       isActive = false;
     };
-  }, [search, sortAscending, currentPage]);
+  }, [search, sortBy, sortAscending, currentPage]);
 
   useEffect(() => {
     let isActive = true;
@@ -128,7 +128,7 @@ function AdminStores() {
   const refreshStores = async () => {
     const params = new URLSearchParams({
       search,
-      sortBy: 'name',
+      sortBy,
       order: sortAscending ? 'asc' : 'desc',
       page: String(currentPage),
       limit: '10',
@@ -146,6 +146,19 @@ function AdminStores() {
       limit: 10,
     });
   };
+
+  const handleSort = (field) => {
+    if (sortBy === field) {
+      setSortAscending((value) => !value);
+    } else {
+      setSortBy(field);
+      setSortAscending(true);
+    }
+    setCurrentPage(1);
+  };
+
+  const sortMark = (field) =>
+    sortBy === field ? (sortAscending ? ' ▲' : ' ▼') : '';
 
   const handleSearch = (value) => {
     setSearch(value);
@@ -322,15 +335,36 @@ function AdminStores() {
               <tr className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
                 <th className="px-5 py-3">
                   <button
-                    onClick={() => setSortAscending((value) => !value)}
+                    onClick={() => handleSort('name')}
                     className="flex items-center gap-1"
                   >
-                    Store <ArrowUpDown size={13} />
+                    Store{sortMark('name')} <ArrowUpDown size={13} />
                   </button>
                 </th>
-                <th className="px-5 py-3">Email</th>
-                <th className="px-5 py-3">Address</th>
-                <th className="px-5 py-3">Average Rating</th>
+                <th className="px-5 py-3">
+                  <button
+                    onClick={() => handleSort('email')}
+                    className="flex items-center gap-1"
+                  >
+                    Email{sortMark('email')} <ArrowUpDown size={13} />
+                  </button>
+                </th>
+                <th className="px-5 py-3">
+                  <button
+                    onClick={() => handleSort('address')}
+                    className="flex items-center gap-1"
+                  >
+                    Address{sortMark('address')} <ArrowUpDown size={13} />
+                  </button>
+                </th>
+                <th className="px-5 py-3">
+                  <button
+                    onClick={() => handleSort('average_rating')}
+                    className="flex items-center gap-1"
+                  >
+                    Average Rating{sortMark('average_rating')} <ArrowUpDown size={13} />
+                  </button>
+                </th>
                 <th className="px-5 py-3">Store Owner</th>
               </tr>
             </thead>

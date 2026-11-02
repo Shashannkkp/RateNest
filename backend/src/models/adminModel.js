@@ -30,7 +30,7 @@ const getAllUsers = async ({
          FROM users
          INNER JOIN roles ON users.role_id = roles.id
          WHERE
-            ($1 = '' OR users.name ILIKE $1 OR users.email ILIKE $1)
+            ($1 = '' OR users.name ILIKE $1 OR users.email ILIKE $1 OR users.address ILIKE $1)
             AND ($2 = '' OR roles.name = $2)
          ORDER BY ${sortColumn} ${sortOrder}, users.id ASC
          LIMIT $3 OFFSET $4`,
@@ -51,7 +51,7 @@ const countUsers = async ({ search, role }) => {
          FROM users
          INNER JOIN roles ON users.role_id = roles.id
          WHERE
-            ($1 = '' OR users.name ILIKE $1 OR users.email ILIKE $1)
+            ($1 = '' OR users.name ILIKE $1 OR users.email ILIKE $1 OR users.address ILIKE $1)
             AND ($2 = '' OR roles.name = $2)`,
         [
             search ? `%${search}%` : '',

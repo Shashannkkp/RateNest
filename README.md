@@ -59,13 +59,11 @@ RateNest/
 │   │   ├── routes/
 │   │   ├── validators/
 │   │   └── server.js
-│   ├── .env
 │   └── package.json
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   ├── layouts/
 │   │   ├── pages/
 │   │   ├── services/
 │   │   ├── App.jsx
@@ -94,26 +92,40 @@ cd RateNest
 
 ### 2. Set Up the Database
 
-Create a PostgreSQL database named:
+Create the database and load the schema (run from the project root):
 
-```sql
-CREATE DATABASE ratenest_db;
+```bash
+psql -U postgres -c "CREATE DATABASE ratenest_db;"
+psql -U postgres -d ratenest_db -f backend/database/schema.sql
 ```
 
-Run the database schema from:
-
-```text
-backend/database/schema.sql
-```
-
-Also ensure the `token_version` column required for session validation exists:
-
-```sql
-ALTER TABLE users
-ADD COLUMN IF NOT EXISTS token_version INTEGER NOT NULL DEFAULT 0;
-```
+The schema creates all tables, the three roles, and the `token_version` column used for session validation.
 
 ### 3. Configure Backend Environment Variables
+
+```bash
+cd backend
+copy .env.example .env      # macOS/Linux: cp .env.example .env
+```
+
+Open `backend/.env` and set:
+
+- `DB_PASSWORD` – your PostgreSQL password
+- `JWT_SECRET` – a long random string
+- `ADMIN_NAME` – 20 to 60 characters
+- `ADMIN_EMAIL` and `ADMIN_PASSWORD` – the first administrator's login (password: 8–16 characters, one uppercase letter, one special character)
+- `ADMIN_ADDRESS` – any address up to 400 characters
+
+Never commit the real `.env` file.
+
+Create the first administrator account:
+
+```bash
+npm install
+npm run create-admin
+```
+
+Log in with `ADMIN_EMAIL` and `ADMIN_PASSWORD`. From the admin dashboard you can create stores first, then Store Owner accounts and assign them to those stores.
 
 Create a `.env` file inside the `backend` folder.
 

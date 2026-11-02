@@ -1,15 +1,9 @@
 
--- =========================================
--- RateNest - Database Schema
--- =========================================
-
--- 1. ROLES TABLE
 CREATE TABLE IF NOT EXISTS roles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(30) UNIQUE NOT NULL
 );
 
--- 2. USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(60) NOT NULL,
@@ -26,7 +20,6 @@ CREATE TABLE IF NOT EXISTS users (
         CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$')
 );
 
--- 3. STORES TABLE
 CREATE TABLE IF NOT EXISTS stores (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -36,7 +29,6 @@ CREATE TABLE IF NOT EXISTS stores (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. RATINGS TABLE
 CREATE TABLE IF NOT EXISTS ratings (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -48,7 +40,6 @@ CREATE TABLE IF NOT EXISTS ratings (
     CONSTRAINT unique_user_store_rating UNIQUE (user_id, store_id)
 );
 
--- 5. OWNERSHIP REQUESTS TABLE
 CREATE TABLE IF NOT EXISTS ownership_requests (
     id SERIAL PRIMARY KEY,
     store_id INTEGER NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
@@ -62,7 +53,6 @@ CREATE TABLE IF NOT EXISTS ownership_requests (
     CONSTRAINT unique_store_owner_request UNIQUE (store_id, user_id)
 );
 
--- 6. INSERT DEFAULT ROLES
 INSERT INTO roles (name)
 VALUES
     ('ADMIN'),
@@ -70,7 +60,6 @@ VALUES
     ('STORE_OWNER')
 ON CONFLICT (name) DO NOTHING;
 
--- 7. PERFORMANCE INDEXES
 CREATE INDEX IF NOT EXISTS idx_users_role_id
     ON users(role_id);
 
@@ -85,3 +74,7 @@ CREATE INDEX IF NOT EXISTS idx_ratings_user_id
 
 CREATE INDEX IF NOT EXISTS idx_ownership_status
     ON ownership_requests(status);
+
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS token_version INTEGER NOT NULL DEFAULT 0;

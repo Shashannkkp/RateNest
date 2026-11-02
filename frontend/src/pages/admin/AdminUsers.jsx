@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Plus, Search, X, ArrowUpDown, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import AdminLayout from './AdminLayout';
@@ -11,6 +10,7 @@ function AdminUsers() {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [sortAscending, setSortAscending] = useState(true);
+  const [sortBy, setSortBy] = useState('name');
   const [showForm, setShowForm] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -51,7 +51,7 @@ function AdminUsers() {
 
         const params = new URLSearchParams({
           search,
-          sortBy: 'name',
+          sortBy,
           order: sortAscending ? 'asc' : 'desc',
           page: String(currentPage),
           limit: '10',
@@ -89,7 +89,7 @@ function AdminUsers() {
     return () => {
       isActive = false;
     };
-  }, [search, roleFilter, sortAscending, currentPage]);
+  }, [search, roleFilter, sortBy, sortAscending, currentPage]);
 
   useEffect(() => {
     if (!showForm || form.role !== 'STORE_OWNER') {
@@ -128,6 +128,19 @@ function AdminUsers() {
       isActive = false;
     };
   }, [showForm, form.role]);
+
+  const handleSort = (field) => {
+    if (sortBy === field) {
+      setSortAscending((value) => !value);
+    } else {
+      setSortBy(field);
+      setSortAscending(true);
+    }
+    setCurrentPage(1);
+  };
+
+  const sortMark = (field) =>
+    sortBy === field ? (sortAscending ? ' ▲' : ' ▼') : '';
 
   const handleSearch = (value) => {
     setSearch(value);
@@ -295,7 +308,7 @@ function AdminUsers() {
               <input
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search users..."
+                placeholder="Search by name, email or address..."
                 className="w-full bg-transparent text-xs outline-none sm:w-40"
               />
             </label>
@@ -337,15 +350,29 @@ function AdminUsers() {
               <tr className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
                 <th className="px-5 py-3">
                   <button
-                    onClick={() => setSortAscending((value) => !value)}
+                    onClick={() => handleSort('name')}
                     className="flex items-center gap-1"
                   >
-                    User <ArrowUpDown size={13} />
+                    User{sortMark('name')} <ArrowUpDown size={13} />
                   </button>
                 </th>
-                <th className="px-5 py-3">Email</th>
+                <th className="px-5 py-3">
+                  <button
+                    onClick={() => handleSort('email')}
+                    className="flex items-center gap-1"
+                  >
+                    Email{sortMark('email')} <ArrowUpDown size={13} />
+                  </button>
+                </th>
                 <th className="px-5 py-3">Address</th>
-                <th className="px-5 py-3">Role</th>
+                <th className="px-5 py-3">
+                  <button
+                    onClick={() => handleSort('role')}
+                    className="flex items-center gap-1"
+                  >
+                    Role{sortMark('role')} <ArrowUpDown size={13} />
+                  </button>
+                </th>
                 <th className="px-5 py-3">Action</th>
               </tr>
             </thead>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import {
   LockKeyhole,
@@ -79,13 +78,13 @@ function OwnerChangePassword() {
       setLoading(true);
       setMessage('');
 
-      const response = await authService.changePassword({
+      await authService.changePassword({
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
       });
 
       setMessage(
-        response.message || 'Your password has been updated successfully.'
+        'Password updated. Redirecting to log in with your new password...'
       );
       setMessageType('success');
 
@@ -96,6 +95,12 @@ function OwnerChangePassword() {
       });
 
       setShowPassword({});
+
+      setTimeout(() => {
+        localStorage.removeItem('ratenest_token');
+        localStorage.removeItem('ratenest_user');
+        window.location.replace('/login');
+      }, 2000);
     } catch (error) {
       setMessage(error.message || 'Unable to update your password.');
       setMessageType('error');

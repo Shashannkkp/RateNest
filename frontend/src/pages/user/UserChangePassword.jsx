@@ -83,7 +83,7 @@ function UserChangePassword() {
         newPassword: formData.newPassword,
       });
 
-      setMessage('Your password has been updated successfully.');
+      setMessage('Password updated. Redirecting to log in with your new password...');
       setMessageType('success');
 
       setFormData({
@@ -93,6 +93,12 @@ function UserChangePassword() {
       });
 
       setShowPassword({});
+      
+        setTimeout(() => {
+           localStorage.removeItem('ratenest_token');
+           localStorage.removeItem('ratenest_user');
+           window.location.replace('/login');
+         }, 2000);
     } catch (error) {
       setMessage(error.message || 'Unable to update your password.');
       setMessageType('error');
